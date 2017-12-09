@@ -36,7 +36,8 @@
         <property name="entityManagerFactory" ref="entityManagerFactory"/>
     </bean>
 
-    <tx:annotation-driven/>
+    <tx:annotation-driven transaction-manager="transactionManager" proxy-target-class="true"/>
 
     <jpa:repositories base-package="net.proselyte.springsecurityapp.dao"/>
+
 </beans>

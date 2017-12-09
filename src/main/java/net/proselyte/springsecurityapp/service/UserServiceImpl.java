@@ -1,8 +1,10 @@
 package net.proselyte.springsecurityapp.service;
 
 import net.proselyte.springsecurityapp.dao.RoleDao;
+import net.proselyte.springsecurityapp.dao.RoomDao;
 import net.proselyte.springsecurityapp.dao.UserDao;
 import net.proselyte.springsecurityapp.model.Role;
+import net.proselyte.springsecurityapp.model.Room;
 import net.proselyte.springsecurityapp.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -14,10 +16,14 @@ import java.util.List;
 import java.util.Set;
 
 @Service
+@Transactional
 public class UserServiceImpl implements UserService {
 
     @Autowired
     private UserDao userDao;
+
+    @Autowired
+    private RoomDao roomDao;
 
     @Autowired
     private RoleDao roleDao;
@@ -32,22 +38,22 @@ public class UserServiceImpl implements UserService {
         Set<Role> roles = new HashSet<>();
         roles.add(roleDao.getOne(1L));
         user.setRoles(roles);
+
+        Set<Room> roomSet = new HashSet<>();
+        roomSet = user.getRooms();
+        for(Room room : roomSet){
+            if(room.getFull_count() >= room.getCurrent_count()){
+                room.setCurrent_count(room.getCurrent_count()+1);
+                roomDao.save(room);
+            }
+            else {
+                System.out.print("OR");
+            }
+        }
         userDao.save(user);
-
-      /*  List<User> userList = userDao.findAll();
-
-        for(User user1:userList){
-            user1.getId();
-            user1.getUsername();
-            Set<Role> userRole = user1.getRoles();
-            Object[] arrayView = userRole.toArray();
-            int a = arrayView.length;
-            String test = ((Role)arrayView[0]).getName();
-            System.out.println("QWEQEQEW"+test);
-        }*/
     }
-
     @Override
+    @Transactional
     public List<User> listUsers() {
         return userDao.findAll();
     }
@@ -67,4 +73,5 @@ public class UserServiceImpl implements UserService {
     public User findById(Long id) {
         return userDao.findOne(id);
     }
+
 }

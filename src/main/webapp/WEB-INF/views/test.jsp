@@ -12,18 +12,5 @@
 </head>
 <body>
 
-<table class="tg">
-    <tr>
-        <th width="80">ID</th>
-        <th width="120">Title</th>
-        <th width="120">Author</th>
-        <th width="120">Price</th>
-    </tr>
-    <tr>
-        <td>${user.id}</td>
-        <td>${user.username}</td>
-        <td>${user.password}</td>
-    </tr>
-</table>
 </body>
 </html>

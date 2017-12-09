@@ -1,20 +1,28 @@
 package net.proselyte.springsecurityapp.controller;
 
+import net.proselyte.springsecurityapp.model.Room;
 import net.proselyte.springsecurityapp.model.User;
+import net.proselyte.springsecurityapp.service.RoomService;
 import net.proselyte.springsecurityapp.service.SecurityService;
 import net.proselyte.springsecurityapp.service.UserService;
 import net.proselyte.springsecurityapp.validator.UserValidator;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.propertyeditors.CustomCollectionEditor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.WebDataBinder;
+import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
+import java.util.HashSet;
+import java.util.Set;
 
 @Controller
 public class UserController {
+
+    @Autowired
+    private RoomService roomService;
 
     @Autowired
     private UserService userService;
@@ -25,21 +33,38 @@ public class UserController {
     @Autowired
     private UserValidator userValidator;
 
+    @InitBinder
+    protected void initBinder(WebDataBinder binder) throws Exception{
+        binder.registerCustomEditor(Set.class,"rooms", new CustomCollectionEditor(Set.class){
+            protected Object convertElement(Object element){
+                if (element instanceof String) {
+                    Set<Room> rooms = new HashSet<>();
+                    rooms.add(roomService.findById(Long.parseLong(element.toString())));
+
+                    return rooms;
+                }
+                return null;
+            }
+        });
+    }
+
     @RequestMapping(value = "/registration", method = RequestMethod.GET)
     public String registration(Model model) {
         model.addAttribute("userForm", new User());
+        model.addAttribute("listRooms", roomService.listRooms());
 
         return "registration";
     }
 
     @RequestMapping(value = "/registration", method = RequestMethod.POST)
-    public String registration(@ModelAttribute("userForm") User userForm, BindingResult bindingResult, Model model) {
+    public String registration(@ModelAttribute("userForm") @Valid User userForm,
+                               BindingResult bindingResult,
+                               Model model)
+    {
         userValidator.validate(userForm, bindingResult);
-
         if (bindingResult.hasErrors()) {
             return "registration";
         }
-
         userService.save(userForm);
 
         securityService.autoLogin(userForm.getUsername(), userForm.getConfirmPassword());
@@ -86,8 +111,31 @@ public class UserController {
 
     @RequestMapping(value = "info/{id}",method = RequestMethod.GET)
     public String infoUser(@PathVariable("id") Long id, Model model){
-        model.addAttribute("user",userService.findById(id));
+        model.addAttribute("userInfo",userService.findById(id));
+
+        return "forward:/admin";
+    }
+
+    @RequestMapping(value = "update/{id}",method = RequestMethod.POST)
+    public String test23(@PathVariable("id") Long id, Model model){
+        User user = userService.findById(id);
+        user.setUsername(user.getUsername());
 
         return "test";
     }
+
+   /* @RequestMapping(value="/registration", method=RequestMethod.GET)
+    public ModelAndView updatePlayerPage(@PathVariable Long id){
+        User user = userService.findById(id);
+        List<Room> rooms = roomService.listRooms();
+
+        teamCache = new HashMap<Integer, Team>();
+        for(Team team : teams){
+            teamCache.put((Integer)team.getId(), team);
+        }
+        ModelAndView modelAndView = new ModelAndView("player/edit");
+        modelAndView.addObject("player", player);
+        return modelAndView;
+    }*/
+
 }

@@ -53,6 +53,13 @@
             </div>
         </spring:bind>
 
+        <spring:bind path="rooms">
+
+                <div class="form-group ${status.error ? 'has-error' : ''}">
+                    <form:select path="rooms" multiple="true" class="form-control" items="${listRooms}" itemLabel="level" itemValue="id"/>
+                    <form:errors path="rooms"></form:errors>
+                </div>
+        </spring:bind>
         <button class="btn btn-lg btn-primary btn-block" type="submit">Submit</button>
     </form:form>
 

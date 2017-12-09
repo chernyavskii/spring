@@ -17,14 +17,14 @@
 </head>
 
 <body>
-<a class="btn btn-primary" data-toggle="collapse" href="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
+<%--<a class="btn btn-primary" data-toggle="collapse" href="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
     Link with href
 </a>
 <div class="collapse" id="collapseExample">
     <div class="card card-body">
-        Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident.
+        testtest
     </div>
-</div>
+</div>--%>
 <div class="container">
     <c:if test="${pageContext.request.userPrincipal.name != null}">
         <form id="logoutForm" method="post" action="${contextPath}/logout">
@@ -40,6 +40,7 @@
                 <th>id</th>
                 <th>username</th>
                 <th>password</th>
+                <th>room</th>
                 <th>info</th>
                 <th>update</th>
                 <th>delete</th>
@@ -51,14 +52,22 @@
                     <td>${user.id}</td>
                     <td>${user.username}</td>
                     <td>${user.password}</td>
+                    <c:forEach items="${user.roles}" var="role">
+                        <td>${role.name}</td>
+                    </c:forEach>
                     <td><a href="<c:url value='/info/${user.id}'/>" class="btn btn-info">Info</a></td>
                     <td><a href="<c:url value='/update/${user.id}'/>" class="btn btn-warning">Update</a></td>
                     <td><a href="<c:url value='/delete/${user.id}'/>" class="btn btn-danger">Delete</a></td>
                 </tr>
             </c:forEach>
-
+            <div id="infoUser">
+                <b>${userInfo.id}</b>
+                <b>${userInfo.username}</b>
+                <b>${userInfo.password}</b>
+            </div>
             </tbody>
         </table>
+
     </c:if>
 </div>
 
