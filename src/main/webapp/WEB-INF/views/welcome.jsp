@@ -18,6 +18,14 @@
 </head>
 <body>
 <h2> WELCOME PAGE, MISHA, USER!!!</h2>
+${user.id}
+${user.username}
+<c:forEach items="${user.rooms}" var="rooms">
+    <c:forEach items="${rooms.users}" var="room">
+        ${room.username}
+    </c:forEach>
+    ${rooms.level}
+</c:forEach>
 <%--
 <div class="container">
         <h2>Striped Rows</h2>

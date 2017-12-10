@@ -53,13 +53,20 @@
             </div>
         </spring:bind>
 
-        <spring:bind path="rooms">
-
+    <%--    <spring:bind path="rooms">
                 <div class="form-group ${status.error ? 'has-error' : ''}">
-                    <form:select path="rooms" multiple="true" class="form-control" items="${listRooms}" itemLabel="level" itemValue="id"/>
+                    <form:select path="rooms" multiple="true" items="${listRooms}" itemLabel="level" itemValue="id"/>
                     <form:errors path="rooms"></form:errors>
                 </div>
+        </spring:bind>--%>
+        <spring:bind path="rooms">
+        <form:select path="rooms">
+            <form:option value="NONE" label="--- Select ---" />
+            <form:options items="${listRooms}" itemLabel="level" itemValue="id" />
+        </form:select>
         </spring:bind>
+
+
         <button class="btn btn-lg btn-primary btn-block" type="submit">Submit</button>
     </form:form>
 

@@ -42,13 +42,8 @@ public class UserServiceImpl implements UserService {
         Set<Room> roomSet = new HashSet<>();
         roomSet = user.getRooms();
         for(Room room : roomSet){
-            if(room.getFull_count() >= room.getCurrent_count()){
-                room.setCurrent_count(room.getCurrent_count()+1);
-                roomDao.save(room);
-            }
-            else {
-                System.out.print("OR");
-            }
+            room.setCurrent_count(room.getCurrent_count()+1);
+            roomDao.save(room);
         }
         userDao.save(user);
     }

@@ -15,6 +15,7 @@ import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.security.Principal;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -51,7 +52,11 @@ public class UserController {
     @RequestMapping(value = "/registration", method = RequestMethod.GET)
     public String registration(Model model) {
         model.addAttribute("userForm", new User());
+/*
         model.addAttribute("listRooms", roomService.listRooms());
+*/
+        model.addAttribute("listRooms", roomService.listFreeRooms());
+
 
         return "registration";
     }
@@ -63,6 +68,9 @@ public class UserController {
     {
         userValidator.validate(userForm, bindingResult);
         if (bindingResult.hasErrors()) {
+            ///////////////////////////////////было только return "registration"
+            model.addAttribute("listRooms", roomService.listFreeRooms());
+            model.addAttribute("userForm", new User());
             return "registration";
         }
         userService.save(userForm);
@@ -81,15 +89,12 @@ public class UserController {
         if (logout != null) {
             model.addAttribute("message", "Logged out successfully.");
         }
-
         return "login";
     }
 
     @RequestMapping(value = {"/", "/welcome"}, method = RequestMethod.GET)
-    public String welcome(Model model) {
-       /* model.addAttribute("user", new User());
-        model.addAttribute("listUsers", userService.listUsers());*/
-//////////////
+    public String welcome(Model model, Principal principal) {
+        model.addAttribute("user", userService.findByUsername(principal.getName()));
 
         return "welcome";
     }
@@ -123,19 +128,5 @@ public class UserController {
 
         return "test";
     }
-
-   /* @RequestMapping(value="/registration", method=RequestMethod.GET)
-    public ModelAndView updatePlayerPage(@PathVariable Long id){
-        User user = userService.findById(id);
-        List<Room> rooms = roomService.listRooms();
-
-        teamCache = new HashMap<Integer, Team>();
-        for(Team team : teams){
-            teamCache.put((Integer)team.getId(), team);
-        }
-        ModelAndView modelAndView = new ModelAndView("player/edit");
-        modelAndView.addObject("player", player);
-        return modelAndView;
-    }*/
 
 }

@@ -40,5 +40,11 @@ public class UserValidator implements Validator {
         if (!user.getConfirmPassword().equals(user.getPassword())) {
             errors.rejectValue("confirmPassword", "Different.userForm.password");
         }
+
+        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "rooms", "Required");
+        if (user.getRooms() == null) {
+            errors.rejectValue("rooms", "Size.userForm.password");
+        }
+
     }
 }
