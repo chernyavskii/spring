@@ -41,10 +41,10 @@ public class UserValidator implements Validator {
             errors.rejectValue("confirmPassword", "Different.userForm.password");
         }
 
-        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "rooms", "Required");
+        /*ValidationUtils.rejectIfEmptyOrWhitespace(errors, "rooms", "Required");
         if (user.getRooms() == null) {
             errors.rejectValue("rooms", "Size.userForm.password");
-        }
+        }*/
 
     }
 }

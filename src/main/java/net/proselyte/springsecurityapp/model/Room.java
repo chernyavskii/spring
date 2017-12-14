@@ -23,6 +23,10 @@ public class Room {
     @ManyToMany(mappedBy = "rooms",fetch = FetchType.EAGER)
     private Set<User> users;
 
+    @ManyToMany(mappedBy = "rooms",fetch = FetchType.EAGER)
+    private Set<Control> controls;
+
+
     public Long getId() {
         return id;
     }
@@ -63,6 +67,14 @@ public class Room {
         this.users = users;
     }
 
+    public Set<Control> getControls() {
+        return controls;
+    }
+
+    public void setControls(Set<Control> controls) {
+        this.controls = controls;
+    }
+
     @Override
     public String toString() {
         return "Room{" +
@@ -71,6 +83,7 @@ public class Room {
                 ", current_count=" + current_count +
                 ", full_count=" + full_count +
                 ", users=" + users +
+                ", controls=" + controls +
                 '}';
     }
 }

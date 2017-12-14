@@ -20,15 +20,48 @@ public class User {
     @Transient
     private String confirmPassword;
 
+    @Column(name = "firstName")
+    private String firstName;
+
+    @Column(name = "lastName")
+    private String lastName;
+
+    @Column(name = "address")
+    private String address;
+
+    @Column(name = "phone")
+    private String phone;
+
+    @Column(name = "birth")
+    private String birth;
+
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "role_id"))
     private Set<Role> roles;
 
     @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(name = "user_pays",joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "pay_id"))
+    private Set<Pay> pays;
+
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "user_rooms", joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "room_id"))
     private Set<Room> rooms;
+
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(name = "user_duties", joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "duty_id"))
+    private Set<Duty> duties;
+
+    public Set<Duty> getDuties() {
+        return duties;
+    }
+
+    public void setDuties(Set<Duty> duties) {
+        this.duties = duties;
+    }
 
     public Set<Room> getRooms() {
         return rooms;
@@ -36,6 +69,14 @@ public class User {
 
     public void setRooms(Set<Room> rooms) {
         this.rooms = rooms;
+    }
+
+    public Set<Pay> getPays() {
+        return pays;
+    }
+
+    public void setPays(Set<Pay> pays) {
+        this.pays = pays;
     }
 
     public Long getId() {
@@ -78,6 +119,46 @@ public class User {
         this.roles = roles;
     }
 
+    public String getFirstName() {
+        return firstName;
+    }
+
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
+
+    public String getBirth() {
+        return birth;
+    }
+
+    public void setBirth(String birth) {
+        this.birth = birth;
+    }
+
     @Override
     public String toString() {
         return "User{" +
@@ -85,8 +166,14 @@ public class User {
                 ", username='" + username + '\'' +
                 ", password='" + password + '\'' +
                 ", confirmPassword='" + confirmPassword + '\'' +
+                ", firstName='" + firstName + '\'' +
+                ", lastName='" + lastName + '\'' +
+                ", address='" + address + '\'' +
+                ", phone='" + phone + '\'' +
                 ", roles=" + roles +
+                ", pays=" + pays +
                 ", rooms=" + rooms +
+                ", duties=" + duties +
                 '}';
     }
 }

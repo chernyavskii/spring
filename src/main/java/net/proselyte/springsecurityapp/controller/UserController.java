@@ -1,10 +1,10 @@
 package net.proselyte.springsecurityapp.controller;
 
+import net.proselyte.springsecurityapp.model.Duty;
+import net.proselyte.springsecurityapp.model.Pay;
 import net.proselyte.springsecurityapp.model.Room;
 import net.proselyte.springsecurityapp.model.User;
-import net.proselyte.springsecurityapp.service.RoomService;
-import net.proselyte.springsecurityapp.service.SecurityService;
-import net.proselyte.springsecurityapp.service.UserService;
+import net.proselyte.springsecurityapp.service.*;
 import net.proselyte.springsecurityapp.validator.UserValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.CustomCollectionEditor;
@@ -33,6 +33,15 @@ public class UserController {
 
     @Autowired
     private UserValidator userValidator;
+
+    @Autowired
+    private PayService payService;
+
+    @Autowired
+    private ControlService controlService;
+
+    @Autowired
+    private DutyService dutyService;
 
     @InitBinder
     protected void initBinder(WebDataBinder binder) throws Exception{
@@ -95,6 +104,8 @@ public class UserController {
     @RequestMapping(value = {"/", "/welcome"}, method = RequestMethod.GET)
     public String welcome(Model model, Principal principal) {
         model.addAttribute("user", userService.findByUsername(principal.getName()));
+        model.addAttribute("payForm", new Pay());
+        model.addAttribute("dutyForm", new Duty());
 
         return "welcome";
     }
@@ -114,11 +125,14 @@ public class UserController {
         return "redirect:/admin";
     }
 
-    @RequestMapping(value = "info/{id}",method = RequestMethod.GET)
+    @RequestMapping(value = "users/user/{id}",method = RequestMethod.GET)
     public String infoUser(@PathVariable("id") Long id, Model model){
-        model.addAttribute("userInfo",userService.findById(id));
+        model.addAttribute("userProfile",userService.findById(id));
 
-        return "forward:/admin";
+        return "userProfile";
+/*
+        return "forward:/info";
+*/
     }
 
     @RequestMapping(value = "update/{id}",method = RequestMethod.POST)
@@ -129,4 +143,60 @@ public class UserController {
         return "test";
     }
 
+    @RequestMapping(value = "/users/pay",method = RequestMethod.POST)
+    public String pay(@ModelAttribute("payForm") @Valid Pay payForm,
+                      BindingResult bindingResult, Principal principal){
+        //userValidator.validate(payForm,bindingResult);
+        User thisUser = userService.findByUsername(principal.getName());
+        payService.save(payForm, thisUser);
+        return "redirect:/users/pay";
+    }
+
+    @RequestMapping(value = "/users/duty/{id}", method = RequestMethod.POST)
+    public String newDuty(@ModelAttribute("dutyForm") @Valid Duty dutyForm,
+                          BindingResult bindingResult,@PathVariable("id") Long id, Principal principal){
+
+       // Long id_user = userService.findByUsername(principal.getName()).getId();
+        //dutyService.save(dutyForm, thisUser);
+        dutyService.testF(id, dutyForm);
+
+        return "redirect:/users/duty";
+    }
+
+    @RequestMapping(value = "/users/duty", method = RequestMethod.GET)
+    public String getDutiest(Model model, Principal principal){
+        model.addAttribute("user", userService.findByUsername(principal.getName()));
+        model.addAttribute("dutyForm", new Duty());
+
+        return "duties";
+    }
+
+    @RequestMapping(value = "/users/duty/r/{id}", method = RequestMethod.GET)
+    public String setReceiveStatus(@PathVariable("id") Long id,Principal principal, Model model){
+        dutyService.setReceiveStatus(id);
+
+        return "redirect:/users/duty";
+    }
+
+   /* @RequestMapping(value = "/users/duty/f/{id}", method = RequestMethod.GET)
+    public String setFailStatus(@PathVariable("id") Long id,Principal principal){
+        dutyService.setFailStatus(id);
+
+        return "redirect:/users/duty";
+    }*/
+
+    @RequestMapping(value = "/users", method = RequestMethod.GET)
+    public String getRoomUsers(Model model, Principal principal){
+        model.addAttribute("user", userService.findByUsername(principal.getName()));
+
+        return "roomUsers";
+    }
+
+    @RequestMapping(value = "/users/pay", method = RequestMethod.GET)
+    public String getPay(Model model, Principal principal){
+        model.addAttribute("user", userService.findByUsername(principal.getName()));
+        model.addAttribute("payForm", new Pay());
+
+        return "pay";
+    }
 }
