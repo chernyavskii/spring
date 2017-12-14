@@ -45,4 +45,17 @@ public class RoomServiceImpl implements RoomService {
         return listFreeRooms;
     }
 
+    @Override
+    public Long getCountFreeRooms() {
+        Iterator<Room> crunchifyIterator = listFreeRooms().iterator();
+        Long count = 0L;
+        while (crunchifyIterator.hasNext()){
+            for (Room room : listFreeRooms()){
+                count = count + room.getFull_count() - room.getCurrent_count();
+                crunchifyIterator.next();
+            }
+        }
+        return count;
+    }
+
 }

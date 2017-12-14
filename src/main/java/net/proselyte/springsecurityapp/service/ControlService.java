@@ -1,5 +1,7 @@
 package net.proselyte.springsecurityapp.service;
 
-public interface ControlService {
+import net.proselyte.springsecurityapp.model.Control;
 
+public interface ControlService {
+    void addNewControl(Control duty);
 }

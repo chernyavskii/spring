@@ -17,35 +17,18 @@
 <nav class="navbar navbar-inverse">
     <div class="container-fluid">
         <div class="navbar-header">
-            <a class="navbar-brand" href="#">Общежитие</a>
+            <a class="navbar-brand" href="/">Общежитие</a>
         </div>
         <ul class="nav navbar-nav">
             <li class="active"><a href="/">Главная</a></li>
-            <li class="dropdown">
-                <a class="dropdown-toggle" data-toggle="dropdown">Комната<span class="caret"></span></a>
-                <ul class="dropdown-menu">
-                    <li><a href="#">Соседи по комнате</a></li>
-                    <li><a href="#">Контроль чистоты и порядка</a></li>
-                </ul>
-            </li>
-            <li class="dropdown">
-                <a class="dropdown-toggle" data-toggle="dropdown" href="#">Оплата за проживание<span class="caret"></span></a>
-                <ul class="dropdown-menu">
-                    <li><a href="#">Добавить новую запись</a></li>
-                    <li><a href="#">Список активных</a></li>
-                </ul>
-            </li>
-            <li class="dropdown">
-                <a class="dropdown-toggle" data-toggle="dropdown" href="#">Дежурство<span class="caret"></span></a>
-                <ul class="dropdown-menu">
-                    <li><a href="#">Добавить новую запись</a></li>
-                    <li><a href="#">Список активных</a></li>
-                </ul>
-            </li>
+            <li><a href="/users">Моя комната</a></li>
+            <li><a href="/users/pay">Оплата за проживание</a></li>
+            <li><a href="/users/duty">Дежурство</a></li>
+
         </ul>
         <ul class="nav navbar-nav navbar-right">
-            <li><a href="#"><span class="glyphicon glyphicon-user"></span> Профиль</a></li>
-            <li><a href="#"><span class="glyphicon glyphicon-log-in"></span> Выйти</a></li>
+            <li><a href="/users/user/${user.id}">Профиль</a></li>
+            <li><a href="#">Выйти</a></li>
         </ul>
     </div>
 </nav>

@@ -22,7 +22,7 @@ public class Duty {
     @Column(name = "time_duty")
     private String time_duty;
 
-    @ManyToMany(mappedBy = "duties")
+    @ManyToMany(mappedBy = "duties", fetch = FetchType.EAGER)
     private Set<User> users;
 
     public Long getId() {

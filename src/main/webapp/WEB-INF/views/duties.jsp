@@ -11,45 +11,30 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link href="${contextPath}/resources/css/bootstrap.min.css" rel="stylesheet">
 
+    <link href="https://fonts.googleapis.com/css?family=Ledger" rel="stylesheet">
+
     <title>Оплата за проживание</title>
 </head>
 <body>
 <nav class="navbar navbar-inverse">
     <div class="container-fluid">
         <div class="navbar-header">
-            <a class="navbar-brand" href="#">Общежитие</a>
+            <a class="navbar-brand" href="/">Общежитие</a>
         </div>
         <ul class="nav navbar-nav">
             <li class="active"><a href="/">Главная</a></li>
-            <li class="dropdown">
-                <a class="dropdown-toggle" data-toggle="dropdown">Комната<span class="caret"></span></a>
-                <ul class="dropdown-menu">
-                    <li><a href="#">Соседи по комнате</a></li>
-                    <li><a href="#">Контроль чистоты и порядка</a></li>
-                </ul>
-            </li>
-            <li class="dropdown">
-                <a class="dropdown-toggle" data-toggle="dropdown" href="#">Оплата за проживание<span class="caret"></span></a>
-                <ul class="dropdown-menu">
-                    <li><a href="#">Добавить новую запись</a></li>
-                    <li><a href="#">Список активных</a></li>
-                </ul>
-            </li>
-            <li class="dropdown">
-                <a class="dropdown-toggle" data-toggle="dropdown" href="#">Дежурство<span class="caret"></span></a>
-                <ul class="dropdown-menu">
-                    <li><a href="#">Добавить новую запись</a></li>
-                    <li><a href="#">Список активных</a></li>
-                </ul>
-            </li>
+            <li><a href="/users">Моя комната</a></li>
+            <li><a href="/users/pay">Оплата за проживание</a></li>
+            <li><a href="/users/duty">Дежурство</a></li>
+
         </ul>
         <ul class="nav navbar-nav navbar-right">
-            <li><a href="#"><span class="glyphicon glyphicon-user"></span> Профиль</a></li>
-            <li><a href="#"><span class="glyphicon glyphicon-log-in"></span> Выйти</a></li>
+            <li><a href="/users/user/${user.id}">Профиль</a></li>
+            <li><a href="#">Выйти</a></li>
         </ul>
     </div>
 </nav>
-<div class="container">
+<div class="container" style="font-family: 'Ledger', serif;">
     <c:forEach items="${user.rooms}" var="room">
         <div style="margin-top:-5px;">
             <h2><b>Комната № ${room.level}</b></h2>
@@ -70,6 +55,8 @@
                             <tr>
                                 <th>Дата</th>
                                 <th>Время</th>
+                                <th></th>
+                                <th></th>
                             </tr>
                             </thead>
                             <tbody id="myTableDutyDanger">
@@ -79,12 +66,12 @@
                                         <td>${item.date}</td>
                                         <td>${item.time_duty}</td>
                                         <td>
-                                            <button <%--href="<c:url value='/users/duty/f/${item.id}'/>"--%> type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal" <%--data-whatever="@mdo"--%>>Отказ</button>
+                                            <button style="float:right;" <%--href="<c:url value='/users/duty/f/${item.id}'/>"--%> type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">Отказ</button>
                                             <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
                                                 <div class="modal-dialog" role="document">
                                                     <div class="modal-content">
                                                         <div class="modal-header">
-                                                            <h5 class="modal-title" id="exampleModalLabel">New message</h5>
+                                                            <h5 class="modal-title" id="exampleModalLabel">Новое сообщение администратору</h5>
                                                             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                                                 <span aria-hidden="true">&times;</span>
                                                             </button>
@@ -94,18 +81,15 @@
                                                                 <label class="control-label col-xs-3" for="reason">Причина:</label>
                                                                 <spring:bind path="reason">
                                                                     <div class="col-xs-9 ${status.error ? 'has-error' : ''}">
-                                                                        <form:input path="reason" type="text"
-                                                                                    class="form-control" id="reason" />
+                                                                        <form:textarea path="reason" class="form-control" id="reason" />
                                                                         <form:errors path="reason"></form:errors>
                                                                     </div>
                                                                 </spring:bind>
                                                                 <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
-                                                                <br />
-                                                                <div class="form-group">
-                                                                    <div class="col-xs-offset-3 col-xs-9">
-                                                                        <input type="submit" class="btn btn-primary" value="Добавить">
-                                                                        <input type="reset" class="btn btn-default" value="Очистить форму">
-                                                                    </div>
+                                                                <br><br>
+                                                                <div class="modal-footer">
+                                                                    <input type="submit" class="btn btn-primary" value="Добавить">
+                                                                    <input type="reset" class="btn btn-default" value="Очистить форму">
                                                                 </div>
                                                             </form:form>
                                                         </div>
@@ -119,7 +103,7 @@
 <%--
                                             <a  href="<c:url value='/users/duty/f/${item.id}'/>" class="btn btn-success">Отказ</a>
 --%>
-                                            <a href="<c:url value='/users/duty/r/${item.id}'/>" class="btn btn-success">Принять</a>
+                                            <td><a style="float:right;" href="<c:url value='/users/duty/r/${item.id}'/>" class="btn btn-success">Принять</a></td>
                                         </td>
                                     </tr>
                                 </c:if>

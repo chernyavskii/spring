@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Service
@@ -46,5 +47,26 @@ public class PayServiceImpl implements PayService {
 
         payDao.save(pay);
         userDao.save(user);*/
+    }
+
+    @Override
+    public List<Pay> listPays() {
+        return payDao.findAll();
+    }
+
+    @Override
+    public void setToSuccess(Long id) {
+        Pay pay = payDao.findOne(id);
+        pay.setStatus_pay(true);
+
+        payDao.save(pay);
+    }
+
+    @Override
+    public void setToFail(Long id) {
+        Pay pay = payDao.findOne(id);
+        pay.setStatus_pay(false);
+
+        payDao.save(pay);
     }
 }

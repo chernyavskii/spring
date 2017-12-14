@@ -9,4 +9,7 @@ public interface RoomService {
     List<Room> listRooms();
     Room findById(Long id);
     Set<Room> listFreeRooms();
+
+    Long getCountFreeRooms();
+
 }

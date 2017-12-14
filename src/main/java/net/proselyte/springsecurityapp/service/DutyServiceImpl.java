@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 
@@ -24,8 +25,6 @@ public class DutyServiceImpl implements DutyService {
     @Override
     @Transactional
     public void save(Duty duty, User user) {
-       // duty.setStatus(Long.parseLong(1));
-        //ИСПРАВЬ
         Set<User> userSet = new HashSet<>();
         userSet.add(user);
         duty.setUsers(userSet);
@@ -52,16 +51,42 @@ public class DutyServiceImpl implements DutyService {
         getDuty.setReason(duty.getReason());
 
         dutyDao.save(getDuty);
-
-
     }
 
-    /*@Override
-    public void setFailStatus(Long id) {
+    @Override
+    public List<Duty> listDuties() {
+        return dutyDao.findAll();
+    }
+
+    @Override
+    public void addNewDuty(Duty duty) {
+        duty.setStatus(0L);
+        Set<User> userSet = duty.getUsers();
+        Set<Duty> dutySet = new HashSet<>();
+        dutySet.add(duty);
+        dutyDao.save(duty);
+
+        for(User user : userSet){
+            Set<Duty> dutySetUser = user.getDuties();
+            dutySetUser.add(duty);
+            userDao.save(user);
+        }
+    }
+
+    @Override
+    public void toFailStatus(Long id) {
         Duty duty = dutyDao.findOne(id);
-        duty.setStatus(1L);
+        duty.setStatus(0L);
 
         dutyDao.save(duty);
-    }*/
+    }
+
+    @Override
+    public void toSuccessStatus(Long id) {
+        Duty duty = dutyDao.findOne(id);
+        duty.setStatus(2L);
+
+        dutyDao.save(duty);
+    }
 
 }

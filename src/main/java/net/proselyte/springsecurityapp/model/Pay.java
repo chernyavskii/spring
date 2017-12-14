@@ -25,7 +25,7 @@ public class Pay {
     @Column(name = "number_pay")
     private String number_pay;
 
-    @ManyToMany(mappedBy = "pays")
+    @ManyToMany(mappedBy = "pays", fetch = FetchType.EAGER)
     private Set<User> users;
 
     public Set<User> getUsers() {

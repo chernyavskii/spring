@@ -69,4 +69,7 @@ public class UserServiceImpl implements UserService {
         return userDao.findOne(id);
     }
 
+    /*ADMINITRATOR SERVICE*/
+
+
 }

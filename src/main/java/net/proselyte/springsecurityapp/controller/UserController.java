@@ -1,9 +1,6 @@
 package net.proselyte.springsecurityapp.controller;
 
-import net.proselyte.springsecurityapp.model.Duty;
-import net.proselyte.springsecurityapp.model.Pay;
-import net.proselyte.springsecurityapp.model.Room;
-import net.proselyte.springsecurityapp.model.User;
+import net.proselyte.springsecurityapp.model.*;
 import net.proselyte.springsecurityapp.service.*;
 import net.proselyte.springsecurityapp.validator.UserValidator;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -56,16 +53,25 @@ public class UserController {
                 return null;
             }
         });
+
+        binder.registerCustomEditor(Set.class,"users", new CustomCollectionEditor(Set.class){
+            protected Object convertElement(Object element){
+                element.getClass();
+                if (element instanceof String) {
+                    Set<User> users = new HashSet<>();
+                    users.add(userService.findById(Long.parseLong(element.toString())));
+
+                    return users;
+                }
+                return null;
+            }
+        });
     }
 
     @RequestMapping(value = "/registration", method = RequestMethod.GET)
     public String registration(Model model) {
         model.addAttribute("userForm", new User());
-/*
-        model.addAttribute("listRooms", roomService.listRooms());
-*/
         model.addAttribute("listRooms", roomService.listFreeRooms());
-
 
         return "registration";
     }
@@ -77,7 +83,6 @@ public class UserController {
     {
         userValidator.validate(userForm, bindingResult);
         if (bindingResult.hasErrors()) {
-            ///////////////////////////////////было только return "registration"
             model.addAttribute("listRooms", roomService.listFreeRooms());
             model.addAttribute("userForm", new User());
             return "registration";
@@ -114,11 +119,19 @@ public class UserController {
     public String admin(Model model) {
         model.addAttribute("user", new User());
         model.addAttribute("listUsers", userService.listUsers());
+        model.addAttribute("listRooms", roomService.listRooms());
+        model.addAttribute("listPays", payService.listPays());
+        model.addAttribute("listDuties", dutyService.listDuties());
 
+
+        model.addAttribute("dutyForm", new Duty());
+        model.addAttribute("controlForm", new Control());
+
+        model.addAttribute("countFreeRooms", roomService.getCountFreeRooms());
         return "admin";
     }
 
-    @RequestMapping(value = "delete/{id}", method = RequestMethod.GET)
+    @RequestMapping(value = "admin/users/delete/{id}", method = RequestMethod.GET)
     public String deleteUser(@PathVariable("id") Long id){
         userService.remove(id);
 
@@ -130,23 +143,12 @@ public class UserController {
         model.addAttribute("userProfile",userService.findById(id));
 
         return "userProfile";
-/*
-        return "forward:/info";
-*/
-    }
-
-    @RequestMapping(value = "update/{id}",method = RequestMethod.POST)
-    public String test23(@PathVariable("id") Long id, Model model){
-        User user = userService.findById(id);
-        user.setUsername(user.getUsername());
-
-        return "test";
     }
 
     @RequestMapping(value = "/users/pay",method = RequestMethod.POST)
     public String pay(@ModelAttribute("payForm") @Valid Pay payForm,
                       BindingResult bindingResult, Principal principal){
-        //userValidator.validate(payForm,bindingResult);
+
         User thisUser = userService.findByUsername(principal.getName());
         payService.save(payForm, thisUser);
         return "redirect:/users/pay";
@@ -156,8 +158,6 @@ public class UserController {
     public String newDuty(@ModelAttribute("dutyForm") @Valid Duty dutyForm,
                           BindingResult bindingResult,@PathVariable("id") Long id, Principal principal){
 
-       // Long id_user = userService.findByUsername(principal.getName()).getId();
-        //dutyService.save(dutyForm, thisUser);
         dutyService.testF(id, dutyForm);
 
         return "redirect:/users/duty";
@@ -178,13 +178,6 @@ public class UserController {
         return "redirect:/users/duty";
     }
 
-   /* @RequestMapping(value = "/users/duty/f/{id}", method = RequestMethod.GET)
-    public String setFailStatus(@PathVariable("id") Long id,Principal principal){
-        dutyService.setFailStatus(id);
-
-        return "redirect:/users/duty";
-    }*/
-
     @RequestMapping(value = "/users", method = RequestMethod.GET)
     public String getRoomUsers(Model model, Principal principal){
         model.addAttribute("user", userService.findByUsername(principal.getName()));
@@ -199,4 +192,54 @@ public class UserController {
 
         return "pay";
     }
+
+    @RequestMapping(value = "/admin/pay/s/{id}", method = RequestMethod.GET)
+    public String setToSuccessStatus(@PathVariable("id") Long id){
+        payService.setToSuccess(id);
+
+        return "redirect:/admin";
+    }
+
+    @RequestMapping(value = "/admin/pay/f/{id}", method = RequestMethod.GET)
+    public String setToFailStatus(@PathVariable("id") Long id){
+        payService.setToFail(id);
+
+        return "redirect:/admin";
+    }
+
+    @RequestMapping(value = "/admin/duty/add", method = RequestMethod.POST)
+    public String addNewDuty(@ModelAttribute("dutyForm") @Valid Duty dutyForm,
+                             BindingResult bindingResult, Model model){
+        dutyService.addNewDuty(dutyForm);
+        return "redirect:/admin";
+    }
+
+    @RequestMapping(value = "/admin/duty/f/{id}", method = RequestMethod.GET)
+    public String toFailStatus(@PathVariable("id") Long id){
+        dutyService.toFailStatus(id);
+
+        return "redirect:/admin";
+    }
+
+    @RequestMapping(value = "/admin/duty/s/{id}", method = RequestMethod.GET)
+    public String toSuccessStatus(@PathVariable("id") Long id){
+        dutyService.toSuccessStatus(id);
+
+        return "redirect:/admin";
+    }
+
+    @RequestMapping(value = "/admin/control/add", method = RequestMethod.POST)
+    public String addNewControl(@ModelAttribute("controlForm") @Valid Control controlForm,
+                             BindingResult bindingResult, Model model){
+        controlService.addNewControl(controlForm);
+
+        return "redirect:/admin";
+    }
+
+
+
+
+
+
+
 }
