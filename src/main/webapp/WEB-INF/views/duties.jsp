@@ -34,7 +34,7 @@
         </ul>
     </div>
 </nav>
-<div class="container" style="font-family: 'Ledger', serif;">
+<div class="container">
     <c:forEach items="${user.rooms}" var="room">
         <div style="margin-top:-5px;">
             <h2><b>Комната № ${room.level}</b></h2>

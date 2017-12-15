@@ -14,16 +14,32 @@
     <title>Панель Администратора</title>
 </head>
 <body>
+<nav class="navbar navbar-inverse">
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <a class="navbar-brand" href="/">Общежитие</a>
+        </div>
+        <ul class="nav navbar-nav">
+            <li class="active"><a href="/">На сайт</a></li>
+        </ul>
+        <ul class="nav navbar-nav navbar-right">
+            <li><a onclick="document.forms['logoutForm'].submit()">Выйти</a></li>
+        </ul>
+    </div>
+</nav>
 <div class="container">
-    <h2>Количество свободных мест: ${countFreeRooms}</h2>
+    <div class="jumbotron">
+        <h1 style="font-family: 'Lobster', cursive;">Панель Администратора</h1>
+        <p>Предоставляет необходимый набор функций для управления системой. </p>
+    </div>
+    <h2>Количество свободных мест: <b>${countFreeRooms}</b></h2>
     <c:if test="${pageContext.request.userPrincipal.name != null}">
         <form id="logoutForm" method="post" action="${contextPath}/logout">
             <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
         </form>
-        <h2>Admin Page ${pageContext.request.userPrincipal.name} | <a onclick="document.forms['logoutForm'].submit()">Logout</a>
-        </h2>
-        <h2>Striped Rows</h2>
-        <p>The .table-striped class adds zebra-stripes to a table:</p>
+<%--        <h2>Панель АДМИНИСТРАТОРА ${pageContext.request.userPrincipal.name} | <a onclick="document.forms['logoutForm'].submit()">Выйти</a>
+        </h2>--%>
+
         <div class="panel panel-primary">
             <div class="panel-heading">Оплата за проживание в общежитии</div>
             <div class="panel-body">
@@ -223,7 +239,7 @@
                                 </thead>
                                 <tbody id="myTableDutyDanger3">
                                 <c:forEach items="${listDuties}" var="duty">
-                                    </tr>
+                                    <tr>
                                     <c:if test="${duty.status == 1 && duty.reason != null}">
                                         <c:forEach items="${duty.users}" var="user">
                                             <td>${user.username}</td>
@@ -234,8 +250,8 @@
                                         <td><a style="float: right" href="<c:url value='/admin/duty/f/${duty.id}'/>" class="btn btn-danger">Отказать</a></td>
                                         <td><a style="float: right" href="<c:url value='/admin/duty/s/${duty.id}'/>" class="btn btn-success">Принять</a></td>
                                     </c:if>
+                                    </tr>
                                 </c:forEach>
-                                </tr>
                                 </tbody>
                             </table>
                         </div>
@@ -256,7 +272,7 @@
                                 </thead>
                                 <tbody id="myTableDutyDanger4">
                                 <c:forEach items="${listDuties}" var="duty">
-                                    </tr>
+                                    <tr>
                                     <c:if test="${duty.status == 2}">
                                         <c:forEach items="${duty.users}" var="user">
                                             <td>${user.username}</td>
@@ -265,8 +281,8 @@
                                         <td>${duty.time_duty}</td>
                                         <td><a style="float: right" href="<c:url value='/admin/duty/f/${duty.id}'/>" class="btn btn-danger">Отменить</a></td>
                                     </c:if>
+                                    </tr>
                                 </c:forEach>
-                                </tr>
                                 </tbody>
                             </table>
                         </div>
@@ -333,10 +349,10 @@
 
                 </form:form>
                         </div></div>
-                <div class="panel panel-default">
-<%--
+            <%--    <div class="panel panel-default">
+&lt;%&ndash;
                     <div class="panel-heading">Неподтверждённые транзакции</div>
---%>
+&ndash;%&gt;
                     <div class="panel-body">
                         <table class="table table-striped">
                             <thead>
@@ -350,36 +366,35 @@
                             <tbody>
                             <c:forEach items="${listRooms}" var="room">
                                 <tr>
-                                <td>${room.level}</td>
-                                <c:forEach items="${room.controls}" var="control">
-                                    <c:if test="${control.cleanliness != 0 &&
-                                    control.tidiness != 0 && control.date_control != null}">
+                                    <td>${room.level}</td>
+                                    <c:forEach items="${room.controls}" var="control">
                                         <td>${control.cleanliness}</td>
                                         <td>${control.tidiness}</td>
-                                        <td>${control.date_control}}</td>
-                                    </c:if>
+                                        <td>${control.date_control}</td>
                                 </c:forEach>
                                 </tr>
                             </c:forEach>
                             </tbody>
                         </table>
                     </div>
-                </div>
+                </div>--%>
             </div>
         </div>
-    </div>
-<%--</div>--%>
 
+<%--</div>--%>
+    <hr><br>
+<div class="panel panel-success">
+    <div class="panel-heading">Управление пользователями</div>
+    <div class="panel-body">
         <table class="table table-striped">
             <thead>
             <tr>
                 <th>id</th>
-                <th>username</th>
-                <th>password</th>
-                <th>room</th>
-                <th>info</th>
-                <th>update</th>
-                <th>delete</th>
+                <th>Логин</th>
+                <th>Пароль</th>
+                <th>Комната</th>
+                <th></th>
+                <th></th>
             </tr>
             </thead>
             <tbody>
@@ -388,25 +403,19 @@
                     <td>${user.id}</td>
                     <td>${user.username}</td>
                     <td>${user.password}</td>
-                    <c:forEach items="${user.roles}" var="role">
-                        <td>${role.name}</td>
+                    <c:forEach items="${user.rooms}" var="room">
+                        <td>${room.level}</td>
                     </c:forEach>
-                    <td><a href="<c:url value='/info/${user.id}'/>" class="btn btn-info">Info</a></td>
-                    <td><a href="<c:url value='/update/${user.id}'/>" class="btn btn-warning">Update</a></td>
+                    <td><a href="<c:url value='/users/user/${user.id}'/>" class="btn btn-info">Профиль</a></td>
                     <td><a href="<c:url value='/admin/users/delete/${user.id}'/>" class="btn btn-danger">Delete</a></td>
                 </tr>
             </c:forEach>
-            <div id="infoUser">
-                <b>${userInfo.id}</b>
-                <b>${userInfo.username}</b>
-                <b>${userInfo.password}</b>
-            </div>
-            </tbody>
         </table>
-
     </c:if>
 </div>
-
+</div>
+    <hr><br>
+</div>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
 <script src="${contextPath}/resources/js/bootstrap.min.js"></script>
 

@@ -36,16 +36,39 @@
         <table class="table table-striped">
             <tbody id="myTable">
             <tr align="center">
-                <td>id</td>
+                <td><b>id</b></td>
                 <td>${userProfile.id}</td>
             </tr>
             <tr align="center">
-                <td>Username</td>
+                <td><b>Логин</b></td>
                 <td>${userProfile.username}</td>
             </tr>
             <tr align="center">
-                <td>Password</td>
-                <td>${userProfile.password}</td>
+                <td><b>Имя</b></td>
+                <td>${userProfile.firstName}</td>
+            </tr>
+            <tr align="center">
+                <td><b>Фамилия</b></td>
+                <td>${userProfile.lastName}</td>
+            </tr>
+            <tr align="center">
+                <td><b>Дата рождения</b></td>
+                <td>${userProfile.birth}</td>
+            </tr>
+            <tr align="center">
+                <td><b>Номер телефона</b></td>
+                <td>${userProfile.phone}</td>
+            </tr>
+            <tr align="center">
+                <td><b>Адрес</b></td>
+                <td>${userProfile.address}</td>
+            </tr>
+            <hr>
+            <tr align="center">
+                <td><b>Комната</b></td>
+                <c:forEach items="${userProfile.rooms}" var="room">
+                    <td>${room.level}</td>
+                </c:forEach>
             </tr>
             </tbody>
         </table>
